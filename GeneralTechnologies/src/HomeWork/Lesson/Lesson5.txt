@@ -1,0 +1,227 @@
+# GenTech #5 / Jan 15, 2024
+
+## Ссылки
+
+- [пример схемы БД “видео-хостинг”](https://dbdiagram.io/d/video_hosting_jan_15_2024-659e7f26ac844320aea015c1)
+
+**Примеры запросов**
+
+```jsx
+SELECT *
+FROM Suppliers
+```
+
+```sql
+SELECT
+	Phone
+FROM Suppliers
+
+WHERE
+	Country = 'UK'
+	OR
+	Country = 'Brazil'
+```
+
+```sql
+SELECT
+	Phone
+FROM Suppliers
+
+WHERE
+	Country IN ('UK', 'Brazil')
+```
+
+```sql
+SELECT
+	ProductName,
+	Price
+FROM Products
+
+WHERE
+	Price <= 50
+	AND
+	CategoryID IN (1, 3)
+```
+
+```sql
+SELECT *
+FROM Products
+
+WHERE
+	SupplierID = 1
+
+ORDER BY Price ASC
+```
+
+```sql
+SELECT *
+FROM Products
+
+ORDER BY Price DESC
+LIMIT 3
+```
+
+## Схема типового проекта
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/95d3eea4-bdd9-4866-805a-55b03d066b78/1d5f0d80-8a44-410e-8150-b68f1377b973/Untitled.png)
+
+## Проекция (полей) в БД
+
+- инструмент оптимизации запросов на чтение
+    - снижает нагрузку на выч/ресурсы
+    - оптимизирует время выполнения запросоа
+
+**Задача. Вывести название и стоимость одного самого дорогого товара из категории `1`**
+
+```sql
+SELECT
+		ProductName,
+   	Price
+FROM Products
+
+WHERE
+	CategoryID = 1
+
+ORDER BY Price DESC
+LIMIT 1
+```
+
+**Задача. Вывести товары от поставщиков `1` и `5`**
+
+проекция: `название_товара`, `цена_со_скидкой_2_процента`, `цена_с_наценкой_5_процентов`
+
+```sql
+SELECT
+	ProductName,
+	Price * .98 AS Price_down,
+	Price * 1.05 AS Price_up
+FROM Products
+
+WHERE
+	SupplierID IN (1, 5)
+```
+
+**Пример. Оператор `JOIN`**
+
+```sql
+SELECT *
+FROM Products
+
+JOIN Suppliers ON Products.SupplierID = Suppliers.SupplierID
+```
+
+**Задача. Вывести данные о товарах с ценой от `25` до `125` EUR**
+
+проекция: `название_товара`, `цена_товара`, `название_компании_поставщика`
+
+```sql
+SELECT
+	Products.ProductName,
+  Products.Price,
+  Suppliers.SupplierName
+FROM Products
+
+JOIN Suppliers ON Products.SupplierID = Suppliers.SupplierID
+
+WHERE
+	Products.Price BETWEEN 25 AND 125
+```
+
+**Задача. Вывести данные о заказах клиентов из `France`**
+
+```sql
+SELECT *
+FROM Orders
+
+JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+
+WHERE
+	Customers.Country = 'France'
+```
+
+## Агрегация данных в SQL
+
+**Базовые категории запросов**
+
+1. **CRUD** - более простые запросы
+2. **Aggregation** - получение вычисленных данных (итоги, статистика, аналитика)
+
+**Базовые операторы агрегации**
+
+- `COUNT()` расчет ко-ва строк
+- `AVG()` расчет сред/ариф. знач.
+- `MAX()` расчет макс. значения
+- `MIN()` расчет мин. значения
+- `SUM()` расчет суммы
+
+**Пример. Найти ко-во клиентов**
+
+```sql
+-- всего
+SELECT
+	COUNT(*) AS total_customers
+FROM Customers
+
+-- из Germany
+SELECT
+	COUNT(*) AS total_germany_customers
+FROM Customers
+
+WHERE
+	Country = 'Germany'
+```
+
+**Пример. Товары**
+
+```sql
+-- вывести сред/стоимость товара
+SELECT
+	AVG(Price) AS avg_price
+FROM Products
+
+-- вывести статистику по товарам
+SELECT
+		COUNT(*) AS total_products,
+    MAX(Price) AS max_price,
+    MIN(Price) AS min_price,
+    SUM(Price) AS total_cost,
+    AVG(Price) AS avg_price
+FROM Products
+```
+
+**Задача. Вывести общее ко-во поставщиков не из `USA` и не из `Spain`**
+
+```sql
+SELECT
+	COUNT(*) AS total_not_usa_spain_suppliers
+FROM Suppliers
+
+WHERE
+	NOT Country IN ('USA', 'Spain')
+```
+
+**Задача. Вывести `ко-во заказов`, которое оформил клиент `1`**
+
+```sql
+SELECT
+	COUNT(*) AS total_orders
+FROM Orders
+
+WHERE
+	CustomerID = 1
+```
+
+**Задача. Вывести, какое количество раз был продан товар `72` (по ко-ву заказов)**
+
+```sql
+SELECT
+	COUNT(*) AS sold_count
+FROM OrderDetails
+
+WHERE
+	ProductID = 72
+```
+
+**Задача. Вывести среднюю стоимость товаров от поставщика `3`**
+
+**(проекция: `название_компании_поставщика`, `сред/стоимость`)**
