@@ -1,0 +1,249 @@
+# GenTech #3 / Dec 18, 2023
+
+## Отличие алгоритма от программы
+
+- **Алгоритм** - идея (порядок действий) для решений какой-либо задачи (проблемы)
+- **Программа** - реализация алгоритма
+
+## Общий порядок написания программы
+
+1. Понимание задачи
+2. Поиск решения (алгоритмы, инструменты, технологии и т.д.)
+3. Планирование разработки
+4. Реализация (кодинг, кодирование)
+5. Проверка гипотезы
+6. Развертывание решения
+
+**Задача. Вывести название и стоимость одного товара, который находится на четвертом месте среди самых дорогих**
+
+```sql
+SELECT
+	ProductName,
+	Price
+FROM Products
+
+ORDER BY Price DESC
+LIMIT 1 OFFSET 3
+```
+
+**Задача. Вывести товары от поставщиков `1`и `5` с ценой от `10` до `500` EUR**
+
+```sql
+SELECT *
+FROM Products
+
+WHERE
+	SupplierID IN (1, 5)
+	AND
+	Price BETWEEN 10 AND 500
+```
+
+## Математические операторы в SQL
+
+**Пример. Вывести товары с ценой в долларах**
+
+(проекция: `название_товара`, `цена_в_usd`)
+
+```sql
+SELECT
+	ProductName,
+  Price * 1.08
+FROM Products
+```
+
+## Псевдонимы / Оператор `AS`
+
+**Примеры**
+
+```sql
+SELECT
+	ProductName,
+  Price * 1.08 AS Price_usd
+FROM Products
+```
+
+```sql
+SELECT
+	ProductName,
+  Price AS Price_eur,
+  Price * 1.08 AS Price_usd
+FROM Products;
+```
+
+```sql
+SELECT *,
+	Price * 1.08 AS Price_usd
+FROM Products;
+```
+
+**Задача. Вывести данные о товарах**
+
+(проекция: `название_товара`, `цена_со_скидкой_в_10%`)
+
+```sql
+SELECT
+	ProductName,
+	Price * .9 AS Price_down
+FROM Products
+```
+
+**Задача. Вывести `названия` товаров, а также их `стоимость`:**
+
+- полную
+- со скидкой `25%`
+- с наценкой `15%`
+
+```sql
+SELECT
+		ProductName,
+    Price AS Price_full,
+    Price * .75 AS Price_down,
+    Price * 1.15 AS Price_up
+FROM Products
+```
+
+## Поиск по шаблону / Оператор `LIKE`
+
+- поиск по нестрогому соответствию
+
+**Базовые подстановочные символы (знаки)**
+
+- `%` нулевой, один или несколько символов
+- `_` один символ
+
+**Примеры**
+
+```sql
+SELECT *
+FROM Suppliers
+WHERE
+	Phone LIKE '%555%'
+```
+
+```sql
+SELECT *
+FROM Suppliers
+WHERE
+	SupplierName LIKE '%exo%'
+```
+
+```sql
+SELECT *
+FROM Customers
+WHERE
+	Country LIKE 'usa'
+```
+
+```sql
+SELECT *
+FROM Customers
+WHERE
+	Country LIKE 'g%'
+```
+
+**Задача. Вывести имена и фамилии сотрудников, у которых в имени или фамилии есть вхождение строки `lio`**
+
+```sql
+SELECT
+		FirstName,
+    LastName
+FROM Employees
+
+WHERE
+		FirstName LIKE '%lio%'
+    OR
+    LastName LIKE '%lio%'
+```
+
+## Ключевые поля
+
+- первичный ключ (`PRIMARY KEY`)
+- внешний ключ (`FOREIGN KEY`)
+
+## Горизонтальное объединение таблиц / Оператор `JOIN`
+
+- синтаксис `JOIN`
+
+```sql
+SELECT <проекция>
+FROM <таблица_1>
+JOIN <таблица_2> ON <таблица_1.внешний_ключ>=<таблица_2.первичный_ключ>
+```
+
+**Примеры**
+
+```sql
+SELECT *
+FROM Products
+JOIN Suppliers ON Products.SupplierID = Suppliers.SupplierID
+```
+
+```sql
+SELECT
+		Orders.OrderID,
+    Customers.CustomerName
+FROM Orders
+
+JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+```
+
+```sql
+SELECT *
+FROM Orders
+
+JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID
+```
+
+**Задача. Вывести данные о товарах**
+(проекция: `название_товара`, `цена_товара`, `название_категории`)
+
+```sql
+SELECT
+    Products.ProductName,
+    Products.Price,
+    Categories.CategoryName
+FROM Products
+
+JOIN Categories ON Products.CategoryID = Categories.CategoryID
+```
+
+**Задача. Вывести данные о заказах**
+
+(проекция: `номер_заказа`, `имя_менеджера`, `фамилия_менеджера`)
+
+```sql
+SELECT
+		Orders.OrderID,
+    Employees.FirstName,
+    Employees.LastName
+FROM Orders
+
+JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+```
+
+**Задача. Вывести данные о заказах клиентов из `Germany`**
+
+(проекция: `номер_заказа`, `имя_клиента`, `контактное_имя_клиента`)
+
+```sql
+SELECT
+		Orders.OrderID,
+    Customers.CustomerName,
+    Customers.ContactName
+FROM Orders
+
+JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+
+WHERE
+	Customers.Country = 'Germany'
+```
+
+# Работа с Git/GitHub
+
+## Необходимые знания для работы в команде с помощью Git/GitHub
+
+1. Базовый порядок работы
+2. Ветвление
+3. Модели совместной работы
