@@ -1,0 +1,54 @@
+
+
+link: https://dbdiagram.io/d/65a6a110ac844320ae0a98de
+
+
+table online_game{
+  chess int
+}
+
+table player {
+  id int
+  first_name varchar
+  last_name varchar
+   created_at timestamp
+  login varchar
+  password varchar
+  rating int
+}
+
+table game {
+  id int
+  white_player_id int
+  black_player_id int
+  start_time timestamp
+  end_time timestamp
+  result varchar
+  rating int
+
+}
+
+table move {
+  id int
+  game_id int
+  move_num int
+  white_move int
+  black_move int
+
+}
+
+table message {
+  id int
+  game_id int
+  player_id int
+  text varchar
+
+}
+
+table chat {
+  id int
+  game_id int
+  player_id int
+  text varchar
+
+}
