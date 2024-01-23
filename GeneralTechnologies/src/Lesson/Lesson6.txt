@@ -1,0 +1,148 @@
+# GenTech #6 / Jan 22, 2024
+
+## Ссылки
+
+- [пример схемы БД “онлайн-шахматы”](https://dbdiagram.io/d/online_chessmate_17jan2024-65a796d9ac844320ae18dbbe)
+
+## Основные сущности БД “онлайн-шахматы”
+
+- `игроки`
+- `партии (игровые сессии)`
+- `чаты и сообщения`
+- `ходы`
+- `игровые уровни (карты)`
+
+## Группировка в SQL (механизм агрегации) / оператор `GROUP BY`
+
+**Категории запросов**
+
+1. **CRUD** - простые запросы
+2. **Aggregation** - получение вычисленных данных
+
+**Группировка** - объединение записей на основе общего признака с целью получения обобщенных данных
+
+**Пример. Вывести страны покупателей с ко-вом клиентов из каждой**
+
+(количественное распределение клиентов по странам)
+
+```sql
+SELECT DISTINCT
+	Country
+FROM Customers
+
+--
+
+SELECT
+	Country,
+	COUNT(*) AS total_customers
+FROM Customers
+
+GROUP BY Country
+
+ORDER BY total_customers DESC
+```
+
+**Пример. Вывести кол/распределение товаров по категориям**
+
+```sql
+SELECT
+	CategoryID,
+	COUNT(*) AS total
+FROM Products
+
+GROUP BY CategoryID
+
+ORDER BY total DESC
+--
+
+SELECT
+	Categories.CategoryName,
+	COUNT(*) AS total_products
+FROM Products
+
+JOIN Categories ON Products.CategoryID = Categories.CategoryID
+
+GROUP BY Products.CategoryID
+
+ORDER BY total_products DESC
+
+```
+
+**Задача. Вывести ТОП-3 менеджеров по ко-ву заказов (`фамилия_менеджера`, `ко-во_заказов`)**
+
+```sql
+SELECT
+	Employees.LastName AS managerLastName,
+	COUNT(*) AS total_orders
+FROM Orders
+
+JOIN Employees ON Employees.EmployeeID = Orders.EmployeeID
+
+GROUP BY Employees.EmployeeID
+
+ORDER BY total_orders DESC
+LIMIT 3
+```
+
+**Задача. Вывести `сред/стоимость` товара для каждого поставщика**
+
+```sql
+SELECT
+	Suppliers.SupplierName,
+	AVG(Products.Price) AS avg_price
+FROM Suppliers
+
+JOIN Products ON Products.SupplierID = Suppliers.SupplierID
+
+GROUP BY Products.SupplierID
+```
+
+**Задача. Вывести ТОП-1 компанию среди перевозчиков по ко-ву доставленных заказов**
+
+```sql
+SELECT
+		Shippers.ShipperName,
+    COUNT(*) AS total_orders
+FROM Orders
+
+JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID
+
+GROUP BY Orders.ShipperID
+
+ORDER BY total_orders DESC
+LIMIT 1
+```
+
+## Фильтрация агрегированных данных / оператор `HAVING`
+
+- аналог `WHERE`, который позволяет отфильтровать агрегированные данные
+
+**Примеры**
+
+```sql
+SELECT
+	Employees.LastName AS managerLastName,
+	COUNT(*) AS total_orders
+FROM Orders
+
+JOIN Employees ON Employees.EmployeeID = Orders.EmployeeID
+
+GROUP BY Employees.EmployeeID
+HAVING
+	total_orders >= 100
+
+ORDER BY total_orders DESC
+
+--
+
+SELECT
+	Country,
+	COUNT(*) AS total_customers
+FROM Customers
+
+GROUP BY Country
+HAVING
+	total_customers >= 5
+
+ORDER BY total_customers DESC
+```
