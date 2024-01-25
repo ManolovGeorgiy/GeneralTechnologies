@@ -1,5 +1,7 @@
 -- 1. Вывести заказы со стоимостью от 5000 EUR (проекция: номер_заказа, стоимость_заказа)
 
+Не могу решить первое задание
+
 -- 2. Вывести страны, в которые было отправлено 3 и более заказов
 
 SELECT DISTINCT Country
@@ -44,3 +46,108 @@ JOIN
 GROUP BY
     Employees.EmployeeID;
 
+
+-- 5. Дополните схему БД "онлайн-шахматы" функционалом групповых чатов
+
+link: https://dbdiagram.io/d/65b26bd5ac844320aeb821b1
+
+
+Table players {
+  id int
+  created_at timestamp
+  email varchar
+  password varchar
+  is_blocked bool
+  username varchar
+}
+
+Table game_sessions {
+  id int
+  created_at timestamp
+  black_side_player_id int
+  white_side_player_id int
+  started_at timestamp
+  finished_at timestamp
+  winner_id int
+}
+
+Table moves {
+  id int
+  created_at timestamp
+  player_id int
+  game_session_id int
+  figure_id int
+  from_cell int
+  to_cell int
+}
+
+Table chats {
+  id int
+  created_at timestamp
+  game_session_id int
+}
+
+Table messages {
+  id int
+  created_at timestamp
+  chat_id int
+  content varchar
+  author_id int
+}
+
+Table friendships {
+  id int
+  created_at timestamp
+  player1_id int
+  player2_id int
+}
+
+Table groups_chat {
+  id int
+  created_at timestamp
+  game_session_id int
+}
+
+table members_chat{
+member_id int
+user_id int
+group_id int
+
+}
+
+Table messages_chat {
+message_id int
+group_id int
+user_id int
+message_text timestamp
+}
+
+
+
+Ref: "players"."id" < "moves"."player_id"
+
+Ref: "players"."id" < "messages"."author_id"
+
+Ref: "players"."id" < "game_sessions"."black_side_player_id"
+
+Ref: "players"."id" < "game_sessions"."white_side_player_id"
+
+Ref: "players"."id" < "game_sessions"."winner_id"
+
+Ref: "game_sessions"."id" - "chats"."game_session_id"
+
+Ref: "chats"."id" < "messages"."chat_id"
+
+Ref: "game_sessions"."id" < "moves"."game_session_id"
+
+Ref: "players"."id" < "friendships"."player1_id"
+
+Ref: "players"."id" < "friendships"."player2_id"
+
+Ref: "groups_chat"."game_session_id" < "game_sessions"."id"
+
+Ref: "players"."id" < "members_chat"."member_id"
+
+Ref: "members_chat"."group_id" < "players"."id"
+
+Ref: "messages_chat"."group_id" < "players"."id"
