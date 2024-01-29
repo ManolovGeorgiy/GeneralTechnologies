@@ -1,14 +1,36 @@
 -- 1. Вывести заказы со стоимостью от 5000 EUR (проекция: номер_заказа, стоимость_заказа)
 
-Не могу решить первое задание
+SELECT
+    OrderDetails.OrderID,
+    SUM(Price * Quantity) AS Order_Price
+FROM OrderDetails
+
+JOIN Products ON OrderDetails.ProductID = Products.ProductID
+
+GROUP BY OrderDetails.OrderID
+HAVING Order_Price >= 5000
+
+ORDER BY Order_Price ASC
 
 -- 2. Вывести страны, в которые было отправлено 3 и более заказов
 
+-- 1.решение
 SELECT DISTINCT Country
 FROM Customers
 JOIN Orders  ON Customers.CustomerID = Orders.CustomerID
 GROUP BY Country
 HAVING COUNT(OrderID) >= 3;
+
+-- 2. решение
+SELECT
+    Customers.Country,
+    COUNT(*) AS Count_Of_Orders
+FROM Customers
+JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+GROUP BY Customers.Country
+HAVING
+    Count_Of_Orders >= 3
+ORDER BY Count_Of_Orders DESC
 
 -- 3. Вывести ТОП-10 самых продаваемых товаров (проекция: название_товара, ко_во_проданных_единиц)
 
