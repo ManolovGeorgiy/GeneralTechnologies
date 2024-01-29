@@ -1,0 +1,189 @@
+# GenTech #7 / Jan 29, 2024
+
+## Ссылки
+
+- [схема БД: пример схемы групповых чатов](https://dbdiagram.io/d/group_chats_example-65b7f889ac844320aef99c48)
+- JSON
+
+**Задачи из домашней работы**
+
+```sql
+SELECT
+    OrderDetails.OrderID,
+    SUM(Products.Price * OrderDetails.Quantity) AS Order_Price
+FROM OrderDetails
+
+JOIN Products ON OrderDetails.ProductID = Products.ProductID
+
+GROUP BY OrderDetails.OrderID
+HAVING Order_Price >= 5000
+
+ORDER BY Order_Price ASC
+
+--
+
+SELECT
+    Customers.Country,
+    COUNT(*) AS Count_Of_Orders
+FROM Customers
+
+JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+
+GROUP BY Customers.Country
+HAVING
+	Count_Of_Orders >= 3
+
+ORDER BY Count_Of_Orders DESC
+
+--
+
+SELECT
+	Products.ProductName,
+	SUM(OrderDetails.Quantity) AS Total
+FROM OrderDetails
+
+JOIN Products ON OrderDetails.ProductID = Products.ProductID
+
+GROUP BY Products.ProductID
+
+ORDER BY Total DESC
+LIMIT 10
+
+--
+
+SELECT
+	Employees.LastName,
+	Employees.FirstName,
+	SUM(Products.Price * OrderDetails.Quantity) * .05 AS Salary
+
+FROM Orders
+
+JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+JOIN Products ON OrderDetails.ProductID = Products.ProductID
+
+GROUP BY Employees.EmployeeID
+```
+
+**Пример реализации схемы онлайн-чата (тет-а-тет)**
+
+![Screenshot from 2024-01-29 23-14-39.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/95d3eea4-bdd9-4866-805a-55b03d066b78/9785e1ec-42d8-4662-8ee3-c4f9834d10d0/Screenshot_from_2024-01-29_23-14-39.png)
+
+**Пример реализации схемы онлайн-чата (групповые чаты)**
+
+![Screenshot from 2024-01-29 23-24-52.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/95d3eea4-bdd9-4866-805a-55b03d066b78/4c65fc44-0e20-49a8-a6a1-92ddecb10794/Screenshot_from_2024-01-29_23-24-52.png)
+
+## Studio3T - GUI-клиент для подключения к MongoDB
+
+[Download Studio 3T for MongoDB | Windows, macOS & Linux](https://studio3t.com/download/)
+
+## `URI` для подключения
+
+```sql
+mongodb+srv://abab:MOnM0LLj38AEqPIY@telran.2nqjveq.mongodb.net/admin?retryWrites=true&replicaSet=atlas-14l424-shard-0&readPreference=primary&srvServiceName=mongodb&connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-1&3t.uriVersion=3&3t.connection.name=atlas-14l424-shard-0&3t.databases=admin&3t.alwaysShowAuthDB=true&3t.alwaysShowDBFromUserRole=true&3t.sslTlsVersion=TLS
+```
+
+## Принципиальные отличия MongoDB от RDBMS
+
+1. Другой язык для выполнения запросов (`NoSQL - QUERY API`)
+2. Модель данных - **ДОКУМЕНТНАЯ** (документ - ассоц/массив)
+3. Динамическая схема данных (без схемы, `schemaless`) - каждый документ может иметь свой набор полей
+4. Использует `JSON` и Binary `JSON` (`BSON`)
+
+```sql
+// пример
+users = [
+	{username: 'hacker', email: '123@example.org', is_blocked: true},
+	{username: 'user1', email: 'hello@example.org', phone: '+0000000000'}
+]
+```
+
+## JSON / XML
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/95d3eea4-bdd9-4866-805a-55b03d066b78/ebc32306-bc74-431e-b648-2e8f9bc39605/Untitled.png)
+
+## Базовые структуры данных
+
+1. Скаляр (скалярное значение)
+2. Массив (список значений)
+3. Ассоц/массив (пары ключ/значение, словарь, объект и т.д.)
+4. Множество (список **уникальный** значений)
+
+!https://prod-files-secure.s3.us-west-2.amazonaws.com/95d3eea4-bdd9-4866-805a-55b03d066b78/35e26def-756f-4ec8-a56e-00c3c803fb77/Untitled.png
+
+## Категории запросов
+
+1. `CRUD` - более простые запросы
+2. Aggregation - получение вычисленных данных
+
+## MongoDB: CRUD
+
+**Create**
+
+- `insertOne()` добавить один документ
+    - один аргумент
+        - ассоц/массив (объект)
+- `insertMany()` добавить несколько документов
+    - один аргумент
+        - массив ассоц/массивов (документов)
+
+**Read**
+
+- `findOne()`  найти (выбрать) один документ
+- `find()` найти (выбрать) несколько документов
+    - аргументы
+        - `filter`
+        - `projection`
+- `countDocuments()` ко-во совпадений
+    - аргументы
+        - `filter`
+
+**Update**
+
+- `updateOne()` изменить один документ
+- `updateMany()` изменить несколько документов
+    - аргументы
+        - `filter`
+        - `action`
+
+**Delete**
+
+- `deleteOne()` удалить один документ
+- `deleteMany()` удалить несколько документов
+    - аргументы
+        - `filter`
+
+        ![Screenshot from 2024-01-30 00-23-43.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/95d3eea4-bdd9-4866-805a-55b03d066b78/84625eca-368c-4052-a7a2-34207536d8c8/Screenshot_from_2024-01-30_00-23-43.png)
+
+
+    ## БД `music`
+
+    **Пример. Добавить несколько юзеров**
+
+    ```jsx
+    db.users.insertMany([
+        { fullname: 'Ivan Ivanov', country: 'USA' },
+        { fullname: 'Petr Petrov', country: 'Germany' },
+        { fullname: 'hacker007', country: 'Germany' },
+        { fullname: 'No name User', country: 'France' },
+        { fullname: 'Sidr Sidorov', country: 'USA' }
+    ])
+    ```
+
+    **Пример. Вывести всех юзеров**
+
+    ```jsx
+    db.users.find()
+    ```
+
+    **Пример. Добавить одного юзера**
+
+    ```jsx
+    db.users.insertOne({
+        fullname: 'Mr. X',
+        country: 'USA',
+        email: 'user@example.org'
+    })
+    ```
+
+    **Пример. Вывести юзеров из `USA`**
