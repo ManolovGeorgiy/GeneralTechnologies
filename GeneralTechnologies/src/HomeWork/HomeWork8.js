@@ -1,7 +1,7 @@
 
 1. Вывести юзеров из France
 
-    db.users.find({"country": "France"})
+    db.users.find({"country": "France"});
 
 
 2. Добавить несколько треков (tracks)
@@ -10,7 +10,7 @@
     { title: 'Track 1' },
     { title: 'Track 2' },
     { title: 'Track 3' }
-    ])
+    ]);
 
 
 3. Приведите десять типовых бизнес-процессов для интернет-магазина и их соответствие методам MongoDB
@@ -36,7 +36,7 @@ Table users {
   id int
   username varchar
   created_at timestamp
-  age int
+  age int -- не нужно в этой таблице
   email varchar
   password varchar
   is_blocked bool
@@ -48,7 +48,7 @@ Table tracks {
   title varchar
   duration_secs int
   author_id int
-  reaction_id int
+  reaction_id int -- ' не нужно '
 }
 
 Table reactions {
@@ -56,17 +56,20 @@ Table reactions {
   created_at timestamp
   value int
   author_id int
+  track id -- добавить
 }
 
 
 
-Ref: "reactions"."author_id" < "users"."id"
+Ref: "reactions"."author_id" > "users"."id"
 
-Ref: "users"."id" < "tracks"."id"
+Ref: "users"."id" > "author_id"."id"
 
 
 a. Хранение паролей: Хранение паролей в открытом виде в таблице users представляет собой риск безопасности. Рекомендуется использовать безопасный алгоритм хеширования (например, bcrypt) для хранения хешированных паролей
 
 пример : 'password_hash varchar'
 
-b.
+b. age : Возраст изменяется 'age int'
+
+c.
