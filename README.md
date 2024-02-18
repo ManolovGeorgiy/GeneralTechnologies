@@ -10,6 +10,6 @@
 10. Конспект 10: [Link]()
 
 
-### Все конспекты: [Link](https://western-appeal-39b.notion.site/GenTech-300523-e-be-e-qa-adbaf06c12a34858acea0cf177557844)
+ ### Все конспекты: [Link](https://western-appeal-39b.notion.site/GenTech-300523-e-be-e-qa-adbaf06c12a34858acea0cf177557844)
 
 
