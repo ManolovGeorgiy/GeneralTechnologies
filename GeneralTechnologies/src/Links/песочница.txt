@@ -1,5 +1,4 @@
 
-
 SQL:
 
 https://www.w3schools.com/mysql/trymysql.asp?filename=trysql_select_all

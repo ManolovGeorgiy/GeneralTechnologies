@@ -7,7 +7,7 @@
 7. Конспект 7: [Link](https://western-appeal-39b.notion.site/GenTech-7-Jan-29-2024-e8ca4856817d43ccbff158fe7ead5105)
 8. Конспект 8: [Link](https://western-appeal-39b.notion.site/GenTech-8-Feb-5-2024-894b432e94d34595b4f111b1e36ee153)
 9. Конспект 9: [Link](https://western-appeal-39b.notion.site/GenTech-9-Feb-12-2024-6670431a1dd64cf6be9a541be3b414ea)
-10. Конспект 10: [Link]()
+10. Конспект 10: [Link](https://western-appeal-39b.notion.site/GenTech-10-Feb-19-2024-95abbc4534fc4dfc83c84d0af37c4918)
 
 
  ### Все конспекты: [Link](https://western-appeal-39b.notion.site/GenTech-300523-e-be-e-qa-adbaf06c12a34858acea0cf177557844)
