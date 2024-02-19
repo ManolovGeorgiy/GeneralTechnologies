@@ -20,29 +20,26 @@ account_id int
 user_id int
 account_number varchar
 balance int
+curency varchar
+amount integer
 }
 
 Table Transactions {
 transaction_id int
 sender_account_id int
 receiver_account_id int
-transaction timestamp
+created_at timestamp
+
 }
 
-Table Locks {
-lock_id int
-user_id int
-account_id int
-lock timestamp
-}
 
-Ref: "Transactions"."transaction_id" < "Users"."user_id"
+Ref: "Users"."user_id" < "Accounts"."user_id"
 
-Ref: "Users"."user_id" < "Accounts"."account_id"
+Ref: "Accounts"."account_id" < "Transactions"."sender_account_id"
 
-Ref: "Accounts"."account_id" < "Locks"."lock_id"
+Ref: "Accounts"."account_id" < "Transactions"."receiver_account_id"
 
-Ref: "Accounts"."account_id" < "Transactions"."transaction_id"
+Ref: "Users"."user_id" < "Transactions"."transaction_id"
 
 
 2. Используя метод aggregate(), в рамках БД music вывести названия трех самых продолжительных треков
